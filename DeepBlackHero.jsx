@@ -3,20 +3,37 @@ import React, { useEffect, useRef, useState } from 'react';
 /**
  * ============================================================================
  * SYNAPSE // ALPHA STAR STELLAR MATRIX for React + Tailwind CSS
- * Deep Black (#000000), Alpha Star cursor, 300+ stars, Swarm & Supernovas
+ * Deep Black (#000000), Alpha Star cursor, 0 - 10 000 stars slider, Swarm & Supernovas
  * ============================================================================
  */
 export default function DeepBlackHero() {
   const canvasRef = useRef(null);
+  const [starCount, setStarCount] = useState(600);
   const [telemetry, setTelemetry] = useState({
     fps: 60,
-    particles: 300,
+    particles: 600,
     coords: 'IDLE // VOID',
     mode: 'swarm'
   });
   const [activeTheme, setActiveTheme] = useState('cyan');
   const [mode, setMode] = useState('swarm');
   const engineRef = useRef(null);
+
+  const handleSliderChange = (e) => {
+    const val = parseInt(e.target.value, 10);
+    setStarCount(val);
+    if (engineRef.current) {
+      engineRef.current.setCount(val);
+    }
+  };
+
+  const handlePresetClick = (val) => {
+    setStarCount(val);
+    if (engineRef.current) {
+      engineRef.current.setCount(val);
+      engineRef.current.triggerShockwave(window.innerWidth / 2, window.innerHeight / 2, 220, 3.5);
+    }
+  };
 
   const toggleMode = () => {
     const next = mode === 'swarm' ? 'repel' : 'swarm';
@@ -83,6 +100,7 @@ export default function DeepBlackHero() {
     let trailPoints = [];
     let currentMode = 'swarm';
     let starRotation = 0;
+    let targetCount = starCount;
 
     const cursor = {
       x: -1000,
@@ -104,6 +122,47 @@ export default function DeepBlackHero() {
 
     let currentThemeName = 'cyan';
 
+    function createStar() {
+      const px = Math.random() * width;
+      const py = Math.random() * height;
+      const roll = Math.random();
+      const isSparkle = roll > 0.92;
+      return {
+        x: px,
+        y: py,
+        originX: px,
+        originY: py,
+        vx: 0,
+        vy: 0,
+        floatPhaseX: Math.random() * Math.PI * 2,
+        floatPhaseY: Math.random() * Math.PI * 2,
+        twinklePhase: Math.random() * Math.PI * 2,
+        floatSpeed: 0.006 + Math.random() * 0.012,
+        twinkleSpeed: 0.02 + Math.random() * 0.04,
+        floatRadius: 8 + Math.random() * 20,
+        friction: 0.91 + Math.random() * 0.04,
+        spring: 0.022 + Math.random() * 0.02,
+        orbitDistance: 20 + Math.random() * 220,
+        orbitAngle: Math.random() * Math.PI * 2,
+        orbitSpeed: (0.012 + Math.random() * 0.032) * (Math.random() > 0.5 ? 1 : -1),
+        swarmAttraction: 0.025 + Math.random() * 0.035,
+        size: isSparkle ? 2.2 + Math.random() * 1.8 : 0.9 + Math.random() * 1.4,
+        isSparkle: isSparkle,
+        sparkleRotation: Math.random() * Math.PI,
+        colorType: Math.random() > 0.82 ? 2 : Math.random() > 0.52 ? 1 : 0
+      };
+    }
+
+    function syncCount(cnt) {
+      targetCount = cnt;
+      if (particles.length < targetCount) {
+        const diff = targetCount - particles.length;
+        for (let i = 0; i < diff; i++) particles.push(createStar());
+      } else if (particles.length > targetCount) {
+        particles.length = targetCount;
+      }
+    }
+
     function resize() {
       width = window.innerWidth;
       height = window.innerHeight;
@@ -113,54 +172,16 @@ export default function DeepBlackHero() {
       canvas.height = Math.floor(height * dpr);
       ctx.scale(dpr, dpr);
       cursor.radius = width < 768 ? 140 : 220;
-
-      const area = width * height;
-      const targetCount = Math.min(340, Math.max(120, Math.floor(area / 4800)));
-
-      if (particles.length === 0) {
-        for (let i = 0; i < targetCount; i++) {
-          const px = Math.random() * width;
-          const py = Math.random() * height;
-          const roll = Math.random();
-          let isSparkle = roll > 0.82;
-          let size = isSparkle ? 2.5 + Math.random() * 2 : 1.2 + Math.random() * 1.6;
-
-          particles.push({
-            x: px,
-            y: py,
-            originX: px,
-            originY: py,
-            vx: 0,
-            vy: 0,
-            floatPhaseX: Math.random() * Math.PI * 2,
-            floatPhaseY: Math.random() * Math.PI * 2,
-            twinklePhase: Math.random() * Math.PI * 2,
-            floatSpeed: 0.006 + Math.random() * 0.012,
-            twinkleSpeed: 0.02 + Math.random() * 0.04,
-            floatRadius: 10 + Math.random() * 25,
-            friction: 0.92 + Math.random() * 0.03,
-            spring: 0.025 + Math.random() * 0.02,
-            orbitDistance: 25 + Math.random() * 190,
-            orbitAngle: Math.random() * Math.PI * 2,
-            orbitSpeed: (0.015 + Math.random() * 0.035) * (Math.random() > 0.5 ? 1 : -1),
-            swarmAttraction: 0.03 + Math.random() * 0.04,
-            size: size,
-            baseAlpha: 0.4 + Math.random() * 0.5,
-            isSparkle: isSparkle,
-            sparkleRotation: Math.random() * Math.PI,
-            colorType: Math.random() > 0.8 ? 'tertiary' : Math.random() > 0.5 ? 'secondary' : 'primary'
-          });
-        }
-      }
     }
 
     resize();
+    syncCount(targetCount);
     window.addEventListener('resize', resize, { passive: true });
 
     const handleMouseMove = (e) => {
       cursor.targetX = e.clientX;
       cursor.targetY = e.clientY;
-      if (Math.random() > 0.3) {
+      if (Math.random() > 0.35) {
         stardust.push({
           x: e.clientX,
           y: e.clientY,
@@ -194,7 +215,8 @@ export default function DeepBlackHero() {
           vy: Math.sin(angle) * speed,
           size: 1.5 + Math.random() * 2.5,
           age: 0,
-          maxAge: 45
+          maxAge: 45,
+          colorType: Math.random() > 0.5 ? 0 : 1
         });
       }
       if (supernovas.length > 120) supernovas.splice(0, 35);
@@ -206,6 +228,7 @@ export default function DeepBlackHero() {
     });
 
     engineRef.current = {
+      setCount: syncCount,
       setMode: (m) => { currentMode = m; },
       triggerSupernova: triggerSupernovaInternal,
       triggerShockwave: (x, y, maxRadius = 220, force = 4.5) => {
@@ -263,7 +286,6 @@ export default function DeepBlackHero() {
         timer = 0;
       }
 
-      // Cursor interpolation
       if (cursor.targetX !== -1000) {
         cursor.x += (cursor.targetX - cursor.x) * 0.35;
         cursor.y += (cursor.targetY - cursor.y) * 0.35;
@@ -272,28 +294,11 @@ export default function DeepBlackHero() {
         cursor.y = -1000;
       }
 
-      // Shockwaves update
-      for (let s = shockwaves.length - 1; s >= 0; s--) {
-        const sw = shockwaves[s];
-        sw.radius += sw.speed;
-        sw.alpha = Math.max(0, 1 - sw.radius / sw.maxRadius);
-        if (sw.radius >= sw.maxRadius) shockwaves.splice(s, 1);
-      }
-
-      // Supernovas update
-      for (let i = supernovas.length - 1; i >= 0; i--) {
-        const sn = supernovas[i];
-        sn.x += sn.vx;
-        sn.y += sn.vy;
-        sn.vx *= 0.94;
-        sn.vy *= 0.94;
-        sn.age++;
-        if (sn.age >= sn.maxAge) supernovas.splice(i, 1);
-      }
-
       // Particles Physics Update
       const mouseActive = cursor.x > -500;
-      for (let i = 0; i < particles.length; i++) {
+      const count = particles.length;
+
+      for (let i = 0; i < count; i++) {
         const p = particles[i];
         p.floatPhaseX += p.floatSpeed;
         p.floatPhaseY += p.floatSpeed * 0.8;
@@ -333,40 +338,41 @@ export default function DeepBlackHero() {
 
       // DRAWING
       const palette = themes[currentThemeName];
+      const colors = [palette.primary, palette.secondary, palette.tertiary];
       ctx.fillStyle = '#000000';
       ctx.fillRect(0, 0, width, height);
 
-      // Connecting lines
-      const maxLinkDist = width < 768 ? 95 : 120;
-      ctx.lineWidth = 0.7;
-      for (let i = 0; i < particles.length; i += 2) {
-        const p1 = particles[i];
-        for (let j = i + 1; j < particles.length; j += 2) {
-          const p2 = particles[j];
-          const dist = Math.hypot(p1.x - p2.x, p1.y - p2.y);
-          if (dist < maxLinkDist) {
-            ctx.beginPath();
-            ctx.moveTo(p1.x, p1.y);
-            ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = `rgba(${palette.trail}, ${(1 - dist / maxLinkDist) * 0.28})`;
-            ctx.stroke();
+      // Batched star drawing for high performance (up to 10 000 stars)
+      if (count > 1200) {
+        for (let c = 0; c < 3; c++) {
+          ctx.beginPath();
+          ctx.fillStyle = colors[c];
+          for (let i = 0; i < count; i++) {
+            const p = particles[i];
+            if (p.colorType === c && !p.isSparkle) {
+              ctx.rect(p.x, p.y, p.size, p.size);
+            }
+          }
+          ctx.fill();
+        }
+        for (let i = 0; i < count; i++) {
+          const p = particles[i];
+          if (p.isSparkle) {
+            draw4PointStar(p.x, p.y, 4, p.size * 2.2, p.size * 0.6, colors[p.colorType], p.sparkleRotation);
           }
         }
-      }
-
-      // Draw Stars
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i];
-        const twinkle = 0.6 + Math.sin(p.twinklePhase) * 0.4;
-        const color = palette[p.colorType] || palette.primary;
-
-        if (p.isSparkle) {
-          draw4PointStar(p.x, p.y, 4, p.size * 2.5 * twinkle, p.size * 0.6 * twinkle, color, p.sparkleRotation);
-        } else {
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size * twinkle, 0, Math.PI * 2);
-          ctx.fillStyle = color;
-          ctx.fill();
+      } else {
+        for (let i = 0; i < count; i++) {
+          const p = particles[i];
+          const color = colors[p.colorType];
+          if (p.isSparkle) {
+            draw4PointStar(p.x, p.y, 4, p.size * 2.6, p.size * 0.6, color, p.sparkleRotation);
+          } else {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fillStyle = color;
+            ctx.fill();
+          }
         }
       }
 
@@ -433,25 +439,60 @@ export default function DeepBlackHero() {
         </header>
 
         {/* Hero Section */}
-        <main className="flex-grow flex items-center justify-center py-16 px-4">
+        <main className="flex-grow flex items-center justify-center py-12 px-4">
           <div className="max-w-4xl mx-auto text-center flex flex-col items-center">
             
-            <div className="mb-6 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-xs font-mono text-cyan-300">
-              <span>●</span> ALPHA STAR CURSOR // 300+ ЗВЁЗД
+            <div className="mb-5 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-xs font-mono text-cyan-300">
+              <span>●</span> ALPHA STAR CURSOR // 0 — 10 000 ЗВЁЗД
             </div>
 
-            <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight mb-6 leading-tight">
+            <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight mb-5 leading-tight">
               СВИТА ЗВЁЗД В СТИЛЕ<br />
               <span className="bg-gradient-to-r from-white via-cyan-300 to-sky-400 bg-clip-text text-transparent">
                 ГЛУБОКОГО ЧЕРНОГО
               </span>
             </h1>
 
-            <p className="max-w-2xl text-base sm:text-lg text-white/70 mb-10 leading-relaxed">
-              Управляйте Главной звёздочкой (курсором), за которой кружит и танцует космический рой звёзд. Кликайте для взрыва Суперновы.
+            <p className="max-w-2xl text-base sm:text-lg text-white/70 mb-7 leading-relaxed">
+              Управляйте Главной звёздочкой (курсором), за которой кружит рой звёзд. Регулируйте плотность вселенной ползунком от 0 до 10 000 звёзд!
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 mb-14">
+            {/* Slider Widget */}
+            <div className="w-full max-w-lg bg-black/75 backdrop-blur-2xl border border-white/10 rounded-2xl p-5 mb-8 text-left shadow-2xl">
+              <div className="flex justify-between items-center mb-2 font-mono text-xs">
+                <span className="text-white/80">✦ КОЛИЧЕСТВО ЗВЁЗД:</span>
+                <span className="text-cyan-300 font-bold text-sm bg-black px-3 py-0.5 rounded-full border border-cyan-400/30">
+                  {Number(starCount).toLocaleString('ru-RU')}
+                </span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="10000"
+                step="50"
+                value={starCount}
+                onChange={handleSliderChange}
+                className="w-full h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer accent-cyan-400 mb-3"
+              />
+              <div className="flex justify-between items-center pt-2 border-t border-white/10 text-[11px] font-mono">
+                <span className="text-white/40">Быстрый выбор:</span>
+                <div className="flex gap-1.5">
+                  {[100, 600, 2000, 5000, 10000].map((val) => (
+                    <button
+                      key={val}
+                      onClick={() => handlePresetClick(val)}
+                      className={`px-2 py-0.5 rounded border transition-colors ${
+                        starCount === val ? 'border-cyan-400 text-cyan-300 bg-cyan-950/40 font-bold' : 'border-white/10 text-white/60 hover:border-white/30'
+                      }`}
+                    >
+                      {val === 10000 ? '10 000 MAX' : val}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 mb-12">
               <button
                 onClick={triggerSupernova}
                 className="relative group px-8 py-3.5 rounded-full font-semibold text-sm bg-black border border-cyan-400/60 shadow-[0_0_25px_rgba(0,240,255,0.35)] hover:shadow-[0_0_45px_rgba(0,240,255,0.6)] transition-all hover:scale-105 active:scale-95"
@@ -470,7 +511,7 @@ export default function DeepBlackHero() {
             {/* Telemetry bar */}
             <div className="px-5 py-2.5 rounded-full bg-black/75 backdrop-blur-xl border border-white/10 flex items-center gap-6 font-mono text-xs text-white/60">
               <span>FPS: <strong className="text-cyan-400">{telemetry.fps}</strong></span>
-              <span>ЗВЁЗД: <strong className="text-cyan-300">{telemetry.particles}</strong></span>
+              <span>ЗВЁЗД: <strong className="text-cyan-300">{Number(telemetry.particles).toLocaleString('ru-RU')}</strong></span>
               <span>РЕЖИМ: <strong className="text-cyan-300">{telemetry.mode === 'swarm' ? '✨ РОЙ' : '⚡ РАЗЛЁТ'}</strong></span>
             </div>
 
@@ -491,10 +532,10 @@ export default function DeepBlackHero() {
               </div>
               <h3 className="text-xl font-bold mb-2">Главная Звезда и Рой</h3>
               <p className="text-sm text-white/60 leading-relaxed mb-6">
-                Курсор становится лучистой Альфа-звездой, а остальные 300+ звёзд следуют за ней, образуя танцующий гравитационный вихрь.
+                Курсор становится лучистой Альфа-звездой, а до 10 000 звёзд следуют за ней, образуя танцующий гравитационный вихрь.
               </p>
               <div className="pt-4 border-t border-white/10 font-mono text-xs text-white/40 flex justify-between">
-                <span>ORBIT: 25-190PX</span>
+                <span>CAPACITY: 10 000</span>
                 <span className="text-cyan-400">SWARM DYNAMICS</span>
               </div>
             </div>
@@ -507,7 +548,7 @@ export default function DeepBlackHero() {
               <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-400/30 flex items-center justify-center mb-6 text-purple-400">
                 ⚡
               </div>
-              <h3 className="text-xl font-bold mb-2">Суперновы и Метеоры</h3>
+              <h3 className="text-xl font-bold mb-2">Суперновы и Палитра</h3>
               <p className="text-sm text-white/60 leading-relaxed mb-4">
                 Клик вызывает взрывную вспышку с искрами, а по небу пролетают метеоры.
               </p>
@@ -526,7 +567,7 @@ export default function DeepBlackHero() {
               </div>
               <div className="pt-4 border-t border-white/10 font-mono text-xs text-white/40 flex justify-between">
                 <span>METEORS: ACTIVE</span>
-                <span className="text-purple-400">STELLAR BURSTS</span>
+                <span className="text-purple-400">4 PALETTES</span>
               </div>
             </div>
 
@@ -554,7 +595,7 @@ export default function DeepBlackHero() {
         {/* Footer */}
         <footer className="w-full border-t border-white/[0.08] py-8 bg-black/60 backdrop-blur-md">
           <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs text-white/40">
-            <span>#000000 DEEP BLACK MATRIX // ALPHA STAR ENGINE</span>
+            <span>#000000 DEEP BLACK MATRIX // UP TO 10 000 STARS</span>
             <span>MOBILE TOUCH OPTIMIZED</span>
           </div>
         </footer>

@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * SYNAPSE // UI CONTROLLER & STELLAR MODE MANAGER
+ * SYNAPSE // UI CONTROLLER & STAR CAPACITY SLIDER (0 - 10 000 STARS)
  * ============================================================================
  */
 
@@ -31,7 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
       cursorHalo.style.opacity = '0';
     });
 
-    // Smooth lerp for halo
     function renderHalo() {
       haloX += (mouseX - haloX) * 0.15;
       haloY += (mouseY - haloY) * 0.15;
@@ -41,7 +40,40 @@ document.addEventListener('DOMContentLoaded', () => {
     requestAnimationFrame(renderHalo);
   }
 
-  // 3. Mode Toggle (Swarm vs Repel)
+  // 3. Star Count Slider (0 to 10 000)
+  const starSlider = document.getElementById('star-count-slider');
+  const starCountValue = document.getElementById('star-count-value');
+  const starPresetBtns = document.querySelectorAll('[data-set-stars]');
+
+  function updateStarDisplay(count) {
+    const formatted = Number(count).toLocaleString('ru-RU');
+    if (starCountValue) {
+      starCountValue.textContent = formatted;
+    }
+    if (starSlider) {
+      starSlider.value = count;
+    }
+  }
+
+  if (starSlider) {
+    starSlider.addEventListener('input', (e) => {
+      const val = parseInt(e.target.value, 10);
+      engine.setParticleCount(val);
+      updateStarDisplay(val);
+    });
+  }
+
+  starPresetBtns.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const val = parseInt(btn.getAttribute('data-set-stars'), 10);
+      engine.setParticleCount(val);
+      updateStarDisplay(val);
+      engine.triggerShockwave(window.innerWidth / 2, window.innerHeight / 2, 220, 3.5);
+    });
+  });
+
+  // 4. Mode Toggle (Swarm vs Repel)
   const modeToggleBtns = document.querySelectorAll('[data-mode-toggle]');
   const modeDisplay = document.getElementById('telemetry-mode');
 
@@ -79,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 4. Glassmorphism Card Spotlight & 3D Tilt
+  // 5. Glassmorphism Card Spotlight & 3D Tilt
   const cards = document.querySelectorAll('.glass-card');
   cards.forEach((card) => {
     card.addEventListener('mousemove', (e) => {
@@ -103,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 5. Interactive CTA Supernova / Shockwave triggers
+  // 6. Interactive CTA Supernova / Shockwave triggers
   const primaryCta = document.getElementById('primary-cta');
   if (primaryCta) {
     primaryCta.addEventListener('click', (e) => {
@@ -112,7 +144,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const clickX = rect.left + rect.width / 2;
       const clickY = rect.top + rect.height / 2;
 
-      // Trigger Supernova stellar burst & mega shockwave
       engine.triggerSupernova(clickX, clickY);
       engine.triggerShockwave(clickX, clickY, 340, 6.5);
 
@@ -136,14 +167,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 6. Telemetry Live Updates
+  // 7. Telemetry Live Updates
   const fpsDisplay = document.getElementById('telemetry-fps');
   const particleCountDisplay = document.getElementById('telemetry-particles');
   const coordDisplay = document.getElementById('telemetry-coords');
 
   window.addEventListener('canvas-telemetry', (e) => {
     if (fpsDisplay) fpsDisplay.textContent = `${e.detail.fps} FPS`;
-    if (particleCountDisplay) particleCountDisplay.textContent = `${e.detail.particleCount} ЗВЁЗД`;
+    if (particleCountDisplay) particleCountDisplay.textContent = `${Number(e.detail.particleCount).toLocaleString('ru-RU')} ЗВЁЗД`;
     if (coordDisplay) {
       if (e.detail.cursorX > -500) {
         coordDisplay.textContent = `X:${String(e.detail.cursorX).padStart(4, '0')} Y:${String(e.detail.cursorY).padStart(4, '0')}`;
@@ -153,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 7. Theme Switcher Pills
+  // 8. Theme Switcher Pills
   const themeBtns = document.querySelectorAll('[data-theme-select]');
   themeBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -182,6 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Initial mode UI
+  // Initial UI state
   updateModeUI(engine.mode);
+  updateStarDisplay(engine.targetCount);
 });
