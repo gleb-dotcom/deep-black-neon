@@ -3,10 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>SYNAPSE // Deep Black Interactive Matrix</title>
+  <title>SYNAPSE // Deep Black Star Matrix (#000000)</title>
   
-  <!-- SEO & Social Meta -->
-  <meta name="description" content="Современный интерактивный одностраничный сайт в эстетике глубокого черного цвета (#000000) с реактивным Canvas-фоном, физикой частиц и glassmorphism.">
+  <meta name="description" content="Интерактивный звездный микрокосм в эстетике глубокого черного (#000000): Главная звездочка-курсор, гравитационный рой звезд, суперновы и неоновый glassmorphism.">
   <meta name="theme-color" content="#000000">
 
   <!-- Tailwind CSS CDN -->
@@ -63,27 +62,23 @@
           </div>
           <div class="flex flex-col">
             <span class="font-display font-bold tracking-wider text-base sm:text-lg text-white group-hover:text-cyan-300 transition-colors">
-              SYNAPSE<span class="text-cyan-400">.IO</span>
+              SYNAPSE<span class="text-cyan-400">.STARS</span>
             </span>
-            <span class="font-mono text-[10px] text-white/40 tracking-widest uppercase -mt-1">Deep Black Matrix</span>
+            <span class="font-mono text-[10px] text-white/40 tracking-widest uppercase -mt-1">Deep Black Cosmos</span>
           </div>
         </a>
 
-        <!-- System Status Indicator Badge -->
-        <div class="hidden md:flex items-center gap-3 px-3.5 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.08]">
-          <div class="pulsing-dot"></div>
-          <span class="font-mono text-xs text-white/70 tracking-wide uppercase">
-            SYSTEM: <span class="text-cyan-400">ONLINE</span> // 60 FPS READY
-          </span>
+        <!-- Mode Switcher Pill in Header -->
+        <div class="flex items-center gap-2">
+          <button data-mode-toggle class="neon-pill text-xs font-mono text-cyan-300 cursor-pointer">
+            <span class="text-cyan-400">✨</span> РОЙ ЗВЁЗД: <span class="font-bold">АКТИВЕН</span>
+          </button>
         </div>
 
         <!-- Right Quick Actions -->
         <div class="flex items-center gap-3">
-          <a href="#features" class="hidden sm:inline-flex items-center text-xs font-mono text-white/60 hover:text-white px-3 py-2 transition-colors">
-            СПЕЦИФИКАЦИЯ
-          </a>
           <button id="card-impulse-btn" class="neon-pill text-xs font-mono text-cyan-300 cursor-pointer">
-            <span class="text-cyan-400">⚡</span> ИМПУЛЬС
+            <span class="text-cyan-400">⚡</span> СУПЕРНОВА
           </button>
         </div>
 
@@ -99,36 +94,36 @@
           <div class="neon-pill">
             <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
             <span class="font-mono text-xs uppercase tracking-wider text-cyan-300">
-              Interactive Neural Canvas v2.4
+              Alpha Star Physics Engine v3.0 // 300+ ЗВЁЗД
             </span>
           </div>
         </div>
 
         <!-- Futuristic Headline -->
         <h1 class="hero-headline font-display text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white mb-6 leading-[1.1]">
-          КИНЕТИКА В СТИЛЕ<br>
+          СВИТА ЗВЁЗД В СТИЛЕ<br>
           <span class="text-gradient-cyan">ГЛУБОКОГО ЧЕРНОГО</span>
         </h1>
 
         <!-- Subtitle -->
         <p class="max-w-2xl text-base sm:text-lg md:text-xl text-white/70 font-normal leading-relaxed mb-10">
-          Полноэкранная симуляция частиц с физикой дисперсии от курсора, реактивным неоновым шлейфом и стеклянным интерфейсом, застывшим в абсолютном вакууме <span class="text-cyan-300 font-mono">#000000</span>.
+          Управляйте <span class="text-cyan-300 font-semibold">Главной звёздочкой (курсором)</span>, за которой кружит и танцует космический рой звёзд. Кликайте для взрыва Суперновы или переключайтесь в режим кинетической дисперсии.
         </p>
 
         <!-- CTA Buttons -->
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 w-full max-w-md mb-16">
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 w-full max-w-lg mb-16">
           <button id="primary-cta" class="btn-glowing-neon w-full sm:w-auto">
             <span class="flex items-center gap-2.5">
-              <span>Запустить импульс</span>
-              <svg class="w-4 h-4 text-cyan-300 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <span>Взрыв Суперновы ✦</span>
+              <svg class="w-4 h-4 text-cyan-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
               </svg>
             </span>
           </button>
 
-          <a href="#features" class="btn-frosted-glass w-full sm:w-auto">
-            <span>Исследовать карточки</span>
-          </a>
+          <button data-mode-toggle class="btn-frosted-glass w-full sm:w-auto font-mono text-xs">
+            <span>Сменить режим (Пробел / M)</span>
+          </button>
         </div>
 
         <!-- Live Telemetry Floating Bar -->
@@ -140,12 +135,17 @@
           </div>
           <div class="w-px h-3 bg-white/10 hidden sm:block"></div>
           <div class="flex items-center gap-2">
-            <span>УЗЛЫ:</span>
-            <span id="telemetry-particles" class="text-cyan-300 font-medium">-- NODES</span>
+            <span>ЗВЁЗДЫ:</span>
+            <span id="telemetry-particles" class="text-cyan-300 font-medium">320 ЗВЁЗД</span>
           </div>
           <div class="w-px h-3 bg-white/10 hidden sm:block"></div>
           <div class="flex items-center gap-2">
-            <span>КУРСОР:</span>
+            <span>РЕЖИМ:</span>
+            <span id="telemetry-mode" class="text-cyan-300 font-bold">✨ РОЙ ЗВЁЗД</span>
+          </div>
+          <div class="w-px h-3 bg-white/10 hidden sm:block"></div>
+          <div class="flex items-center gap-2">
+            <span>ГЛАВНАЯ ЗВЕЗДА:</span>
             <span id="telemetry-coords" class="text-purple-300 font-medium">IDLE // VOID</span>
           </div>
         </div>
@@ -160,10 +160,10 @@
       <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 border-b border-white/[0.08] pb-6">
         <div>
           <span class="font-mono text-xs text-cyan-400 uppercase tracking-widest block mb-1">
-            // АРХИТЕКТУРА ИНТЕРФЕЙСА
+            // АРХИТЕКТУРА ЗВЁЗДНОЙ СИСТЕМЫ
           </span>
           <h2 class="font-display text-2xl sm:text-3xl font-bold text-white">
-            Реактивные модули матового стекла
+            Интерактивные звездные механики
           </h2>
         </div>
         <div class="mt-4 md:mt-0">
@@ -176,36 +176,36 @@
       <!-- Cards Grid -->
       <div class="glass-card-container">
 
-        <!-- CARD 1: Physical Dispersion & Spring -->
+        <!-- CARD 1: Swarm & Alpha Star -->
         <div class="glass-card">
           <div class="glass-card-content flex flex-col h-full justify-between">
             <div>
               <div class="glass-icon-box text-cyan-400">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/>
                 </svg>
               </div>
 
               <div class="flex items-center justify-between mb-3">
                 <h3 class="font-display text-xl font-bold text-white">
-                  Кинетическая Дисперсия
+                  Главная Звезда и Рой
                 </h3>
-                <span class="metric-pill">PHYSICS</span>
+                <span class="metric-pill">ALPHA STAR</span>
               </div>
 
               <p class="text-sm text-white/65 leading-relaxed mb-6 font-normal">
-                Частицы физически выталкиваются курсором по закону обратных квадратов. При остановке движения срабатывает пружинный возврат (spring damping) в стабильные орбиты.
+                Курсор превращается в лучистую Главную звезду с 4-лучевой дифракцией и вращающимся ядром. Звезды свиты притягиваются и кружат по многослойным орбитам вокруг неё.
               </p>
             </div>
 
             <div class="border-t border-white/[0.08] pt-4 flex items-center justify-between font-mono text-xs text-white/50">
-              <span>REPULSION: 180PX</span>
-              <span class="text-cyan-400">DAMPING: 0.92</span>
+              <span>ORBIT: 25-190PX</span>
+              <span class="text-cyan-400">SWARM DYNAMICS</span>
             </div>
           </div>
         </div>
 
-        <!-- CARD 2: Neon Cursor Trail & Glow -->
+        <!-- CARD 2: Supernovas & Meteor Streaks -->
         <div class="glass-card">
           <div class="glass-card-content flex flex-col h-full justify-between">
             <div>
@@ -217,13 +217,13 @@
 
               <div class="flex items-center justify-between mb-3">
                 <h3 class="font-display text-xl font-bold text-white">
-                  Светящийся Шлейф
+                  Суперновы и Метеоры
                 </h3>
-                <span class="metric-pill">NEON TRAIL</span>
+                <span class="metric-pill">SUPERNOVA</span>
               </div>
 
               <p class="text-sm text-white/65 leading-relaxed mb-6 font-normal">
-                Мягкий радиальный ореол и интерполированная неоновая линия следуют за курсором с плавным затуханием яркости и неоновым блумом (bloom).
+                При клике мыши или таче рождается взрыв Суперновы с 35 сияющими искрами, а на фоне периодически проносятся стремительные падающие метеоры с градиентным хвостом.
               </p>
 
               <!-- Color Palette Quick Pickers -->
@@ -245,13 +245,13 @@
             </div>
 
             <div class="border-t border-white/[0.08] pt-4 flex items-center justify-between font-mono text-xs text-white/50">
-              <span>GLOW: 320PX</span>
-              <span class="text-purple-400">ADDITIVE BLEND</span>
+              <span>METEORS: ACTIVE</span>
+              <span class="text-purple-400">STELLAR BURSTS</span>
             </div>
           </div>
         </div>
 
-        <!-- CARD 3: Glassmorphism & Mouse Spotlight -->
+        <!-- CARD 3: Glassmorphism Spotlight -->
         <div class="glass-card">
           <div class="glass-card-content flex flex-col h-full justify-between">
             <div>
@@ -269,7 +269,7 @@
               </div>
 
               <p class="text-sm text-white/65 leading-relaxed mb-6 font-normal">
-                Матовое стекло 28px Blur с динамическим радиальным спотлайтом и 3D-наклоном, чутко отслеживающим точные координаты курсора внутри карты.
+                Матовое стекло 28px Blur с динамическим радиальным спотлайтом и 3D-наклоном, чутко отслеживающим точные координаты Главной звезды внутри карты.
               </p>
             </div>
 
@@ -289,10 +289,10 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs text-white/40">
         <div class="flex items-center gap-2">
           <span class="text-cyan-400">#000000</span>
-          <span>ESTHETICS // ACCELERATED REACTIVE CANVAS</span>
+          <span>ALPHA STAR STELLAR MATRIX // 300+ REACTIVE STARS</span>
         </div>
         <div>
-          <span>TOUCH OPTIMIZED • 60 FPS • WEBGPU READY</span>
+          <span>TOUCH & METEORS OPTIMIZED • 60 FPS • WEBGPU READY</span>
         </div>
       </div>
     </footer>
